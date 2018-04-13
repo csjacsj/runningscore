@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Vue</title>
+  <script src="./vue.2.5.16.js"></script>
+  <style>
+    input {font-size:14px;}
+    #btn-calc {
+      font-size:14px;
+      background-color: #67c23a;
+      border-color: #67c23a;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <p>
+      <label for="input-time">Time</label>
+      <input id="input-time" type="text" placeholder="e.g. 12:00" v-model="timeStr"/>
+      <label for="input-distance" style="margin-left: 2em;">Distance</label>
+      <input id="input-distance" type="text" placeholder="e.g. 2.1" v-model="km"/>
+      <span>km</span>
+      <button id="btn-calc" type="button" style="margin-left: 2em;">calc</button>
+    </p>
+    <p><span>Pace: </span>{{calcPace()}}</p>
+    <p><span>Distance per minute: </span>{{calcKPM()}}</p>
+    <p><span>Distance per 12 minutes: </span>{{(calcKPM()*12).toFixed(3)}}</p>
+  </div>
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        timeStr: '12:00',
+        km: 2.1
+      },
+      methods: {
+        getMinutesByStr() {
+          // note that you don't add `g` at the end, in which case you don't get elements with index greater than 0 in matches
+          let reg = /(\d+):(\d+)/
+          let matches = this.timeStr.match(reg)
+          let m, s
+          if (matches && matches.length > 2) {
+            // console.log(matches)
+            m = parseInt(matches[1])
+            s = parseInt(matches[2])
+            console.log(m, s)
+          }
+          let mnum = (s + m * 60) / 60
+          console.log(`using ${mnum} minutes`)
+          return mnum
+        },
+        calcPace: function () {
+          let m = this.getMinutesByStr()
+          // let m1 = (m / Number(this.km))
+          // let mi = parseInt(m1)
+          // let s = Math.round((m1 - mi) * 60)
+          // return mi.toString() + ':' + s.toString()
+          return 1
+        },
+        calcKPM: function ()  {
+          let m = this.getMinutesByStr()
+          return (this.km / m).toFixed(3)
+        }
+      }
+    })
+  </script>
+</body>
+</html>
