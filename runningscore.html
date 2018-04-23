@@ -23,9 +23,9 @@
       <span>km</span>
       <button id="btn-calc" type="button" style="margin-left: 2em;">calc</button>
     </p>
-    <p><span>Pace: </span>{{calcPace()}}</p>
+    <p><span>Pace: </span>{{calcPace}}</p>
     <p><span>Distance per minute: </span>{{calcKPM()}}</p>
-    <p><span>Distance per 12 minutes: </span>{{(calcKPM()*12).toFixed(3)}}</p>
+    <p><span>Distance per 12 minutes: </span>{{(calcKPM(true)*12).toFixed(3)}}</p>
   </div>
 
   <script>
@@ -37,6 +37,7 @@
       },
       methods: {
         getMinutesByStr() {
+          console.log(`getMinutesByStr`)
           // note that you don't add `g` at the end, in which case you don't get elements with index greater than 0 in matches
           let reg = /(\d+):(\d+)/
           let matches = this.timeStr.match(reg)
@@ -45,24 +46,35 @@
             // console.log(matches)
             m = parseInt(matches[1])
             s = parseInt(matches[2])
-            console.log(m, s)
+            // console.log(m, s)
           }
           let mnum = (s + m * 60) / 60
-          console.log(`using ${mnum} minutes`)
+          // console.log(`using ${mnum} minutes`)
           return mnum
         },
-        calcPace: function () {
+        calcKPM: function (retAsNum=false)  {
+          console.log(`calcKPM`)
           let m = this.getMinutesByStr()
-          // let m1 = (m / Number(this.km))
-          // let mi = parseInt(m1)
-          // let s = Math.round((m1 - mi) * 60)
-          // return mi.toString() + ':' + s.toString()
-          return 1
-        },
-        calcKPM: function ()  {
-          let m = this.getMinutesByStr()
+          if (retAsNum) {
+            return this.km / m
+          }
           return (this.km / m).toFixed(3)
         }
+      },
+      computed: {
+        calcPace: function () {
+          console.log(`calcPace`)
+          let m = this.getMinutesByStr()
+          let m1 = (m / Number(this.km))
+          let mi = parseInt(m1)
+          let s = Math.round((m1 - mi) * 60)
+          let fmts = s.toString()
+          if (fmts.length === 1) {
+            fmts = '0' + fmts;
+          }
+          return mi.toString() + ':' + fmts;
+        },
+        
       }
     })
   </script>
